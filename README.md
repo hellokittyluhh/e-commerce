@@ -45,7 +45,7 @@ ng test
 
 ## Executando testes de ponta a ponta
 
-For end-to-end (e2e) testing, run:
+Para teste de ponta a ponta  (e2e), execute
 
 ```bash
 ng e2e
