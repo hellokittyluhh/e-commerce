@@ -64,4 +64,18 @@ constructor(){
  } 
  //! método para criar um estado de seleção com signal string | null
  produtoSelecionado= signal<string | null>(null);
-}
+ //!metodo para criar um estado paracarrinho com signal 
+ carrinho = signal<{nome:string; preco:number}[]>([]);
+ adicionarAoCarrinho(produto:{nome:string; preco:number}){
+     this.carrinho.update(listaAtual => [...listaAtual,produto]
+        );
+          }
+ //! totalProdutos = computed ( ()=> this.produtyos().length)
+ //metodo para calcular a quantidade de itens no carrinho
+ quantidadeCarrinho = computed(() => this.carrinho().length);
+ //metodo para calcular o valor total dos itens do carrinho
+ totalCarrinho = computed(() => {
+  return this.carrinho().reduce( (total, item) =>
+  total + item.preco,0)});
+ }
+
