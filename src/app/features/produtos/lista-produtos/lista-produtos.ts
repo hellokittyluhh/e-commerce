@@ -5,25 +5,24 @@ import {computed} from '@angular/core';
 import {PrecoFormatadoPipe} from '../../../shared/pipes/preco-formatado-pipe';
 import{effect}from '@angular/core';
 import {UpperCasePipe} from '@angular/common';
-
+import { produtosService} from '../produtos.service';
+import { inject } from '@angular/core';
 @Component({
   selector: 'app-lista-produtos',
   imports: [Produto, PrecoFormatadoPipe, UpperCasePipe],
-  templateUrl: './lista-produtos.html',
+  templateUrl:'./lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
 export class ListaProdutos {  
-  //lista com dados-Array   
-  produtos = signal(  [
-{ nome: 'Mouse Gamer', preco: 229.99 },
-{nome : 'Teclado Mecanico', preco: 129.99},
-{ nome: 'Monitor Gamer', preco: 999.99},
-  ]);
+  //SIGNAL  
+  produtos = signal<{nome:string; preco: number}[]>([]);
+  carregando = signal (true);
   //função para exibir produtos selecionados
   exibirProduto(nome:string){
     console.log('Produto Selecionado :',nome);
     this.produtoSelecionado.set(nome);
-  }
+}
+private produtosService = inject(produtosService);
   //!função que adicionar produtos usando método update ()
   adicionarProduto(){
     this.produtos.update(ListaAtual=>[
@@ -48,8 +47,26 @@ substituirProdutos() {
     { nome: 'Headset', preco: 30 },
   ]);
 }
+//!==========metodo http clint (API)================================
+carregarProdutos(){  
+this.carregando.set(true);
+this.produtosService.buscarProdutos().subscribe({
+  next:(dados) => {
+    const produtos =this.produtosService.transformarProdutos(dados);
+    this.produtos.set(produtos);
+    this.carregando.set(false);
+  },
+  error:(erro) => {
+    console.error ('erro ao carregar produtos', erro);
+    this.carregando.set(false);
+  }
+});
+
+}
 //método para monitorar alterações em tempo real usando o método effect()
 constructor(){
+  //!Carregar a API
+  this.carregarProdutos();
   effect(() => {
     console.log('Lista de produtos Alterados:', this.produtos());
   });
@@ -77,5 +94,8 @@ constructor(){
  totalCarrinho = computed(() => {
   return this.carrinho().reduce( (total, item) =>
   total + item.preco,0)});
- }
+
+
+}
+//=======================metodo
 
