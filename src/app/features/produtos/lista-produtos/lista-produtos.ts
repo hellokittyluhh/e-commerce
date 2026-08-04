@@ -22,6 +22,7 @@ export class ListaProdutos {
     console.log('Produto Selecionado :',nome);
     this.produtoSelecionado.set(nome);
 }
+ erro = signal < string | null > (null);
 private produtosService = inject(produtosService);
   //!função que adicionar produtos usando método update ()
   adicionarProduto(){
@@ -49,7 +50,8 @@ substituirProdutos() {
 }
 //!==========metodo http clint (API)================================
 carregarProdutos(){  
-this.carregando.set(true);
+this.erro.set(null); //!limpar o erro antes de fazer a requisição
+this.carregando.set(true);//! ativar o sinal de carregamento
 this.produtosService.buscarProdutos().subscribe({
   next:(dados) => {
     const produtos =this.produtosService.transformarProdutos(dados);
@@ -58,6 +60,7 @@ this.produtosService.buscarProdutos().subscribe({
   },
   error:(erro) => {
     console.error ('erro ao carregar produtos', erro);
+    this.erro.set('Erro ao carregar produtos.Por favor ,tente novamente!');
     this.carregando.set(false);
   }
 });
