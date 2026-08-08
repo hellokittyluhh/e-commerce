@@ -1,104 +1,140 @@
-import { Component} from '@angular/core';
-import {Produto} from '../../produtos/produto/produto';
-import {signal} from '@angular/core';
-import {computed} from '@angular/core';
-import {PrecoFormatadoPipe} from '../../../shared/pipes/preco-formatado-pipe';
-import{effect}from '@angular/core';
-import {UpperCasePipe} from '@angular/common';
-import { produtosService} from '../produtos.service';
-import { inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { UpperCasePipe } from '@angular/common';
+
+import { Produto } from '../../produtos/produto/produto';
+import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
+import { produtosService } from '../../../core/services/produtos.service';
+import { CarrinhoService } from '../../../core/services/carrinho.service';
+
 @Component({
   selector: 'app-lista-produtos',
-  imports: [Produto, PrecoFormatadoPipe, UpperCasePipe],
-  templateUrl:'./lista-produtos.html',
+  imports: [
+    Produto,
+    PrecoFormatadoPipe,
+    UpperCasePipe
+  ],
+  templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
-export class ListaProdutos {  
-  //SIGNAL  
-  produtos = signal<{nome:string; preco: number}[]>([]);
-  carregando = signal (true);
-  //função para exibir produtos selecionados
-  exibirProduto(nome:string){
-    console.log('Produto Selecionado :',nome);
+export class ListaProdutos {
+
+  // INJEÇÃO DOS SERVIÇOS
+  private produtosService = inject(produtosService);
+  public carrinhoService = inject(CarrinhoService);
+
+  // SIGNAL
+  produtos = signal<{ nome: string; preco: number }[]>([]);
+  carregando = signal(true);
+  erro = signal<string | null>(null);
+
+  // Produto selecionado
+  produtoSelecionado = signal<string | null>(null);
+
+  // Quantidade e total do carrinho
+  quantidadeCarrinho = this.carrinhoService.quantidadeItens;
+  totalCarrinho = this.carrinhoService.totalItens;
+
+  // Exibir produto selecionado
+  exibirProduto(nome: string) {
+    console.log('Produto Selecionado:', nome);
     this.produtoSelecionado.set(nome);
-}
- erro = signal < string | null > (null);
-private produtosService = inject(produtosService);
-  //!função que adicionar produtos usando método update ()
-  adicionarProduto(){
-    this.produtos.update(ListaAtual=>[
-      ...ListaAtual,
-      {nome:'Playstation5', preco: 3000}
+  }
+
+  // Adicionar produto
+  adicionarProduto() {
+    this.produtos.update(listaAtual => [
+      ...listaAtual,
+      {
+        nome: 'Playstation 5',
+        preco: 3000
+      }
     ]);
   }
- //! função que contabiliza a quantidade de item na lista
- totalProdutos = computed(()=> this.produtos().length);
- //função que remove produtos usando método computed()
- valorTotal = computed(()=>
- {return this.produtos().reduce((total,item) =>
-  total +item.preco,0)
-//!função que substituir
-});
-substituirProdutos() {
-  this.produtos.set([
-    { nome: 'Teclado', preco: 50 },
-    { nome: 'Mouse', preco: 15 },
-    { nome: 'Monitor', preco: 500 },
-    { nome: 'Desktop', preco: 1500},
-    { nome: 'Headset', preco: 30 },
-  ]);
-}
-//!==========metodo http clint (API)================================
-carregarProdutos(){  
-this.erro.set(null); //!limpar o erro antes de fazer a requisição
-this.carregando.set(true);//! ativar o sinal de carregamento
-this.produtosService.buscarProdutos().subscribe({
-  next:(dados) => {
-    const produtos =this.produtosService.transformarProdutos(dados);
-    this.produtos.set(produtos);
-    this.carregando.set(false);
-  },
-  error:(erro) => {
-    console.error ('erro ao carregar produtos', erro);
-    this.erro.set('Erro ao carregar produtos.Por favor ,tente novamente!');
-    this.carregando.set(false);
+
+  // Quantidade total de produtos
+  totalProdutos = computed(() =>
+    this.produtos().length
+  );
+
+  // Valor total dos produtos
+  valorTotal = computed(() =>
+    this.produtos().reduce(
+      (total, item) => total + item.preco,
+      0
+    )
+  );
+
+  // Substituir produtos
+  substituirProdutos() {
+    this.produtos.set([
+      { nome: 'Teclado', preco: 50 },
+      { nome: 'Mouse', preco: 15 },
+      { nome: 'Monitor', preco: 500 },
+      { nome: 'Desktop', preco: 1500 },
+      { nome: 'Headset', preco: 30 },
+    ]);
   }
-});
 
-}
-//método para monitorar alterações em tempo real usando o método effect()
-constructor(){
-  //!Carregar a API
-  this.carregarProdutos();
-  effect(() => {
-    console.log('Lista de produtos Alterados:', this.produtos());
-  });
-   effect(() => {
-    console.log(' Valor Total Atualizados:', this.valorTotal());
-   });
-   effect(() => {
-    if(typeof document !== 'undefined'){
-      document.title = `(${this.totalProdutos()})-loja da Vitoria`
-    }
-   });
- } 
- //! método para criar um estado de seleção com signal string | null
- produtoSelecionado= signal<string | null>(null);
- //!metodo para criar um estado paracarrinho com signal 
- carrinho = signal<{nome:string; preco:number}[]>([]);
- adicionarAoCarrinho(produto:{nome:string; preco:number}){
-     this.carrinho.update(listaAtual => [...listaAtual,produto]
+  // Carregar produtos da API
+  carregarProdutos() {
+    this.erro.set(null);
+    this.carregando.set(true);
+
+    this.produtosService.buscarProdutos().subscribe({
+      next: (dados) => {
+        const produtos =
+          this.produtosService.transformarProdutos(dados);
+
+        this.produtos.set(produtos);
+        this.carregando.set(false);
+      },
+
+      error: (erro) => {
+        console.error('Erro ao carregar produtos:', erro);
+
+        this.erro.set(
+          'Erro ao carregar produtos. Por favor, tente novamente!'
         );
-          }
- //! totalProdutos = computed ( ()=> this.produtyos().length)
- //metodo para calcular a quantidade de itens no carrinho
- quantidadeCarrinho = computed(() => this.carrinho().length);
- //metodo para calcular o valor total dos itens do carrinho
- totalCarrinho = computed(() => {
-  return this.carrinho().reduce( (total, item) =>
-  total + item.preco,0)});
 
+        this.carregando.set(false);
+      }
+    });
+  }
 
+  // Adicionar ao carrinho
+  adicionarAoCarrinho(
+    produto: { nome: string; preco: number }
+  ) {
+    this.carrinhoService.adicionar(produto);
+  }
+
+  constructor() {
+
+    // Carregar API
+    this.carregarProdutos();
+
+    // Monitorar alterações nos produtos
+    effect(() => {
+      console.log(
+        'Lista de produtos alterada:',
+        this.produtos()
+      );
+    });
+
+    // Monitorar valor total
+    effect(() => {
+      console.log(
+        'Valor total atualizado:',
+        this.valorTotal()
+      );
+    });
+
+    // Atualizar título da página
+    effect(() => {
+      if (typeof document !== 'undefined') {
+        document.title =
+          `(${this.totalProdutos()}) - Loja da Vitória`;
+      }
+    });
+  }
 }
-//=======================metodo
-
