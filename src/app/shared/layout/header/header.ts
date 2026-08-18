@@ -16,6 +16,7 @@ export class Header {
   nomeLoja ='Mercado seu dinheiro nossa alegria';
   private carrinhoService = inject(CarrinhoService);
   private authService = inject(AuthService);
+  quantidadeHeader = this.carrinhoService.quantidadeItens;
   usuarioAtual = this.authService.usuarioAtual;
   usuarioLogado = this.authService.usuarioLogado;
 
