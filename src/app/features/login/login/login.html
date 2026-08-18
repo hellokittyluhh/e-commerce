@@ -19,15 +19,17 @@
 <p><input type="password" formControlName= "senha" placeholder="Senha"></p>
 
 
-@if(formulario.get('email')?.touched && formulario.get('email')?.invalid){
-    @if(formulario.get('email')?.errors?.['required']){
+@if(formulario.get('senha')?.touched && formulario.get('senha')?.invalid){
+    @if(formulario.get('senha')?.errors?.['required']){
         <small style="color:red;">SENHA É OBRIGATÓRIO</small>
     }
 }
-@if(formulario.get('email')?.errors?.['email']){
+@if(formulario.get('senha')?.errors?.['senha']){
     <small style="color:red;"> SENHA INVÁLIDO</small>
 }
 
+<p>  <button type="button" (click)="entrar()"[disabled]="formulario.invalid">Entrar</button>
+ </p> 
+</form>
 
-    <button type="button" (click)="entrar()"[disabled]="formulario.invalid">Entrar</button>
- </form>
+   

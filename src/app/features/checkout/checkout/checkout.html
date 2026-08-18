@@ -3,7 +3,7 @@
 @if (compraFinalizada()){
 <p style="color:green">Compra finalizada com sucesso!</p>
 }
-@if (carrinho.Service.carrinhoVazio()){
+@if (carrinhoService.carrinhoVazio()){
    <p>Seu carrinho está vazio </p>
    <p style="color:red">Adicione itens ao carrinho antes de finalizar a compra!</p>
 }@else{

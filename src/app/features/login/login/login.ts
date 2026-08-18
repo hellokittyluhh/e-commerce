@@ -5,7 +5,7 @@ import{AuthService} from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -27,8 +27,8 @@ if(this.formulario.invalid){
   this.formulario.markAllAsTouched();
   return;
 }
-const email = this.formulario.value.email??'';
-const senha = this.formulario.value.senha??'';
+const email = this.formulario.value.email ?? '';
+const senha = this.formulario.value.senha ?? '';
 
 const loginFinalizado = this.authService.login(email, senha);
 
