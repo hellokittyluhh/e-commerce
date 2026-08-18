@@ -4,8 +4,7 @@
  @if(!erroLogin()){
     <p style="color:red"> Não foi possivel realizar o login</p>
  }
- <form [formGroup
- ] = "formulario">
+ <form [formGroup] = "formulario">
 <p><input type="email" formControlName="email" placeholder="E-mail"></p>
 
 @if(formulario.get('email')?.touched && formulario.get('email')?.invalid){
@@ -24,11 +23,11 @@
         <small style="color:red;">SENHA É OBRIGATÓRIO</small>
     }
 }
-@if(formulario.get('senha')?.errors?.['senha']){
+@if(formulario.get('senha')?.errors?.['minlength']){
     <small style="color:red;"> SENHA INVÁLIDO</small>
 }
 
-<p>  <button type="button" (click)="entrar()"[disabled]="formulario.invalid">Entrar</button>
+<p>  <button type="button" (click)="entrar()" [disabled]="formulario.invalid">Entrar</button>
  </p> 
 </form>
 
