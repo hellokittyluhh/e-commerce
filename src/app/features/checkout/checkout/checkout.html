@@ -1,4 +1,20 @@
-<h2>Checkout</h2>
+<h2>checkout</h2> 
+
+@if (compraFinalizada()){
+<p style="color:green">Compra finalizada com sucesso!</p>
+}
+@if (carrinho.Service.carrinhoVazio()){
+   <p>Seu carrinho está vazio </p>
+   <p style="color:red">Adicione itens ao carrinho antes de finalizar a compra!</p>
+}@else{
+   <section>
+      <h3>Resumo da compra</h3>
+   </section>
+   @for(item of carrinhoService.itens();track $index){
+      <p>{{item.nome}}-R${{item.preco.toFixed(2)}}</p>
+   }
+   <h4>Total:{{ carrinhoService.totalItens() | precoFormatado }}</h4>
+}
 <form [formGroup]="formulario">
      <p><input type="text" formControlName="nome" placeholder="Digite seu nome completo"></p>
 
