@@ -4,7 +4,7 @@ import { UpperCasePipe } from '@angular/common';
 import { Produto } from '../../produtos/produto/produto';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { produtosService } from '../../../core/services/produtos.service';
-import { CarrinhoService } from '../../../core/services/carrinho.service';
+import { CarrinhoFacade } from '../../../core/facades/carrinho.facade';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -20,7 +20,7 @@ export class ListaProdutos {
 
   // INJEÇÃO DOS SERVIÇOS
   private produtosService = inject(produtosService);
-  public carrinhoService = inject(CarrinhoService);
+  public carrinhoFacade = inject(CarrinhoFacade);
 
   // SIGNAL
   produtos = signal<{ nome: string; preco: number }[]>([]);
@@ -31,8 +31,8 @@ export class ListaProdutos {
   produtoSelecionado = signal<string | null>(null);
 
   // Quantidade e total do carrinho
-  quantidadeCarrinho = this.carrinhoService.quantidadeItens;
-  totalCarrinho = this.carrinhoService.totalItens;
+  quantidadeCarrinho = this.carrinhoFacade.quantidadeCarrinho;
+  totalCarrinho = this.carrinhoFacade.itensCarrinho;
 
   // Exibir produto selecionado
   exibirProduto(nome: string) {
@@ -105,7 +105,7 @@ export class ListaProdutos {
   adicionarAoCarrinho(
     produto: { nome: string; preco: number }
   ) {
-    this.carrinhoService.adicionar(produto);
+    this.carrinhoFacade.adicionarProdutoCarrinho(produto);
   }
 
   constructor() {
