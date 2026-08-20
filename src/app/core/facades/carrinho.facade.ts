@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
-import { CarrinhoService } from "../services/carrinho.service";
-
+import { CarrinhoService} from "../services/carrinho.service";
+import { ItemCarrinho } from "../moldes/item-carrinho";
 type itemCarrinho ={
     nome: string;
     preco: number;
@@ -23,4 +23,7 @@ export class CarrinhoFacade {
 limparCarrinho(){
     this.carrinhoService.limpar();
 }
+  removerItem(rmvItem: number){
+    this.carrinhoService.removerItem(rmvItem);
+  }
 }
