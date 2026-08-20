@@ -1,21 +1,30 @@
 <h2>checkout</h2> 
 
 @if (compraFinalizada()){
-<p style="color:green">Compra finalizada com sucesso!</p>
+<p><strong>Compra finalizada com sucesso!</strong></p>
+<button mat-raised-button color="primary" type="button" routerLink="/produtos">Comprar mais</button>
 }
 @if (carrinhoFacade.carrinhoVazio()){
    <p>Seu carrinho está vazio </p>
+   <p  style="color:red;">Seu carrinho está Vazio</p>
    <p style="color:red">Adicione itens ao carrinho antes de finalizar a compra!</p>
-}@else{
+   <button mat-raised-button color="primary" type="button" routerLink="/produtos">Ver Produtos</button>
+}@else if ( compraFinalizada()){ 
    <section>
       <h3>Resumo da compra</h3>
-   </section>
-   @for(item of carrinhoFacade.itensCarrinho();track $index){
-      <p>{{item.nome}}-R${{item.preco.toFixed(2)}}</p>
+      @for(item of carrinhoFacade.itensCarrinho();track $index){
+    <p><strong>Itens do carrinho:</strong>{{carrinhoFacade.quantidadeCarrinho()}}</p>
+    <p><strong>Total:</strong>{{carrinhoFacade.totalCarrinho() |precoFormatado}}</p>
+    <button mat-raised-button color="primary " type="button" routerLink="/carrinho"> Revisar carrinho</button>
+      }
+ </section>
+
+
    }
-   <h4>Total:{{ carrinhoFacade.totalCarrinho() | precoFormatado }}</h4>
-}
-<form [formGroup]="formulario">
+
+
+
+<form [formGroup]="formulario"> 
      <p><input type="text" formControlName="nome" placeholder="Digite seu nome completo"></p>
 
   @if(formulario.get('nome')?.touched && formulario.get('nome')?.errors?.['required']){
@@ -48,4 +57,4 @@
   }
   
 <button type="button"(click)="finalizar()"[disabled]="formulario.invalid"> Finalizar compra</button>
-</form>
+</form> 

@@ -1,3 +1,37 @@
-<h1>Carrinho🛒🎮!</h1>
-<p>Você está na página do carrinho</p>
-<!--Nas próximas aulas,este carrinho será conectado ao estado global  -->
+<section class="pagina-carrinho">
+
+    <h2>Carrinho</h2>
+    @if(carrinhoFacade.carrinhoVazio()){
+        <p>Seu Carrinho esta vazio 😒😒🥲</p>
+        <button mat-raised-button color="primary" type="button" routerLink="/produtos">Ver Produtos </button>
+    }@else{
+        <section class="lista-carrinho">
+        @for(item of carrinhoFacade.itensCarrinho(); track $index){
+            <article class="item-carrinho">
+                <div class="item">
+                    <p><strong>{{item.nome}}</strong></p>
+                    <p>{{item.preco | precoFormatado}}</p>
+                    <button mat-stroked-button color="warn" type="button"
+                    (click)="removerItem( $index)">Remover</button>
+                    <hr>                    
+                </div>
+            </article>
+        }
+        </section>
+    }
+</section>
+<hr>
+<section class="acoes-carrinho">
+    <h3>Resumo da comprar</h3>
+    <p><strong> Itens de carrinho : </strong>{{carrinhoFacade.quantidadeCarrinho()}}</p>
+    <p><strong> Total: </strong>{{carrinhoFacade.totalCarrinho() | precoFormatado}}</p>
+</section>
+<section class="acoes-carrinho">
+    <button mat-raised-button color = "primary" type = "button" (click) ="limparCarrinho()">Limpar carrinho</button>
+
+    <button mat-raised-button color = "primary" type = "button" routerLink = "/produtos">Ver produtos</button>
+
+    <button mat-raised-button color = "btn-confirmar" type = "button" routerLink = "/checkout">Finalizar Compra</button>
+    
+    <button mat-raised-button color = "btn-cancelar" type = "button" (click) = "cancelarCompra()">Cancelar compra</button>
+</section>
