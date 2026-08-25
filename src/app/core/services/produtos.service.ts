@@ -1,18 +1,15 @@
 import {  Injectable } from "@angular/core";
 import { inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-
+import {ProdutoLoja} from '../../core/models/produto-loja';
 type ProdutoApi = {
    
     title:string;
     price:number;
 };
 
-type Produto = {
-    nome:string;
-    preco:number;
 
-};
+
 @Injectable({ providedIn: 'root' })
 export class produtosService {
     private http = inject( HttpClient);
@@ -20,10 +17,10 @@ export class produtosService {
 buscarProdutos(){
     return this.http.get<ProdutoApi[]>(this.API);
 }
-transformarProdutos(dados: ProdutoApi[]):Produto[] {
-    return dados.map((p) =>({
-        nome:p.title,
-        preco:p.price,
+transformarProdutos(dados: ProdutoApi[]):ProdutoLoja[] {
+    return dados.map((produto) =>({
+        nome:produto.title,
+        preco:produto.price,
     }));
 }
 }

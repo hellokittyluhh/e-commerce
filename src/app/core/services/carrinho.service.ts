@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Injectable, signal, computed, effect, inject, PLATFORM_ID } from '@angular/core';
 
-import { ItemCarrinho } from '../moldes/item-carrinho';
+import { ItemCarrinho } from '../models/item-carrinho';
 
 @Injectable({
   providedIn: 'root',
