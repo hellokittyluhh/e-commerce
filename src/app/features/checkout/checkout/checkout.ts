@@ -5,8 +5,15 @@ import { Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from "@angular/router";
-import { PedidoFinalizado } from '../../../core/moldes/pedido-finalizado';
+import { ItemCarrinho } from '../../../core/models/item-carrinho';
 
+type PedidoFinalizado = {
+  codigo: number;
+cliente: string;
+quantidadeItens: number;
+total: number;
+itens: ItemCarrinho[];
+};
 @Component({
   selector: 'app-checkout',
   imports: [ReactiveFormsModule, PrecoFormatadoPipe, MatButtonModule, RouterLink],
@@ -17,7 +24,7 @@ export class Checkout {
   
   carrinhoFacade = inject(CarrinhoFacade);
   
-  pedidoFinalizado =signal<PedidoFinalizado | null>(null);
+  pedidoFinalizado = signal<PedidoFinalizado | null>(null);
 
 formulario = new FormGroup({
   nome: new FormControl ('',[Validators.required,Validators.minLength(2), nomeSemNumeros]),
@@ -50,13 +57,13 @@ const pedido = {
 }
 
  console.log('Compra finalizada com sucesso!');
-console.log('Dados do formulário:', dados);
-console.log('Dados do pedido:',pedido);
+ console.log('Dados do formulário:', dados);
+ console.log('Dados do pedido:',pedido);
 
 this.carrinhoFacade.limparCarrinho();
 this.formulario.reset();
-
 this.pedidoFinalizado.set(pedido);
+
  }
 }
 
@@ -68,3 +75,5 @@ this.pedidoFinalizado.set(pedido);
   }
   return null;
   }
+
+

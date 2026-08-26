@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { CarrinhoService} from "../services/carrinho.service";
-import { ItemCarrinho } from "../moldes/item-carrinho";
+import { ItemCarrinho } from "../models/item-carrinho";
 type itemCarrinho ={
     nome: string;
     preco: number;

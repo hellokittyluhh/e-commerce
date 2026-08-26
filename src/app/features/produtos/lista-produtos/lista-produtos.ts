@@ -5,14 +5,18 @@ import { Produto } from '../../produtos/produto/produto';
 import { PrecoFormatadoPipe } from '../../../shared/pipes/preco-formatado-pipe';
 import { produtosService } from '../../../core/services/produtos.service';
 import { CarrinhoFacade } from '../../../core/facades/carrinho.facade';
+import { RouterLink } from '@angular/router';
+import{ ProdutoLoja} from '../../../core/models/produto-loja';
+import { MatAnchor } from "@angular/material/button";
 
 @Component({
   selector: 'app-lista-produtos',
   imports: [
-    Produto,
-    PrecoFormatadoPipe,
-    UpperCasePipe
-  ],
+    Produto, PrecoFormatadoPipe, UpperCasePipe,
+    MatAnchor,
+    RouterLink
+],
+  
   templateUrl: './lista-produtos.html',
   styleUrl: './lista-produtos.css',
 })
@@ -23,13 +27,14 @@ export class ListaProdutos {
   public carrinhoFacade = inject(CarrinhoFacade);
 
   // SIGNAL
-  produtos = signal<{ nome: string; preco: number }[]>([]);
+  produtos = signal<ProdutoLoja[]>([]);
   carregando = signal(true);
   erro = signal<string | null>(null);
 
   // Produto selecionado
   produtoSelecionado = signal<string | null>(null);
 
+  valorToTalFormatado = computed(() =>this.valorTotal)
   // Quantidade e total do carrinho
   quantidadeCarrinho = this.carrinhoFacade.quantidadeCarrinho;
   totalCarrinho = this.carrinhoFacade.itensCarrinho;
@@ -103,7 +108,7 @@ export class ListaProdutos {
 
   // Adicionar ao carrinho
   adicionarAoCarrinho(
-    produto: { nome: string; preco: number }
+    produto: (ProdutoLoja)
   ) {
     this.carrinhoFacade.adicionarProdutoCarrinho(produto);
   }
