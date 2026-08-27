@@ -30,4 +30,7 @@ export class Produto {
       preco:this.preco,
     });
   }
+  adicionarFavorito(){
+    
+  }
 }
